@@ -1,21 +1,25 @@
 import HeroSection from '@/components/sections/hero';
+import AboutMeHome from '@/components/sections/about-me-home';
 import Header from '@/components/layout/header';
 import Footer from '@/components/layout/footer';
-import AboutMeSection from '@/components/sections/about-me';
-import AwardsSection from '@/components/sections/awards';
-import CertificationsSection from '@/components/sections/certifications';
-import SocialSection from '@/components/sections/social';
+import StatsStrip from '@/components/sections/stats-strip';
+import FeaturedProjectsSection from '@/components/sections/featured-projects';
+import WhatIBuild from '@/components/sections/what-i-build';
+import CMSHighlight from '@/components/sections/cms-highlight';
+import FinalCTA from '@/components/sections/final-cta';
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
       <Header />
       <main className="flex-1">
         <HeroSection />
-        <AboutMeSection />
-        <AwardsSection />
-        <CertificationsSection />
-        <SocialSection />
+        <AboutMeHome />
+        <StatsStrip />
+        <FeaturedProjectsSection />
+        <WhatIBuild />
+        <CMSHighlight />
+        <FinalCTA />
       </main>
       <Footer />
     </div>

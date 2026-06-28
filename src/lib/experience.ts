@@ -27,6 +27,7 @@ export async function getExperience(): Promise<Experience[]> {
   const { data, error } = await supabase
     .from('experience')
     .select('*')
+    .eq('published', true)
     .order('sort_order', { ascending: true });
 
   if (error) {
@@ -100,6 +101,7 @@ export async function getEducation(): Promise<Education[]> {
   const { data, error } = await supabase
     .from('education')
     .select('*')
+    .eq('published', true)
     .order('sort_order', { ascending: true });
 
   if (error) {

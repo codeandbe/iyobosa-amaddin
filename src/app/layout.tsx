@@ -4,8 +4,8 @@ import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
 
 export const metadata: Metadata = {
-  title: 'MAJIDLABS',
-  description: 'A personal portfolio showcasing projects, skills, and experience.',
+  title: 'CodeAndBe | IYOBOSA MAJID AMADDIN',
+  description: 'Full-stack developer portfolio — AI systems, automation, CMS platforms, and real-world projects by IYOBOSA MAJID AMADDIN.',
 };
 
 export default function RootLayout({
@@ -14,7 +14,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="scroll-smooth">
+    <html lang="en" className="scroll-smooth" data-scroll-behavior="smooth">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />

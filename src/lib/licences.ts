@@ -20,6 +20,7 @@ export async function getLicences(): Promise<Licence[]> {
     const { data, error } = await supabase
       .from('licences_and_certifications')
       .select('*')
+      .eq('published', true)
       .order('sort_order', { ascending: true });
 
     if (error) {

@@ -3,6 +3,7 @@ import { supabase } from './supabase-client';
 export type BlogPost = {
   id: string;
   title: string;
+  slug: string | null;
   excerpt: string;
   content: string;
   url: string;
@@ -12,6 +13,19 @@ export type BlogPost = {
   created_at: string;
   updated_at: string;
 };
+
+export async function getAllBlogPosts(): Promise<BlogPost[]> {
+  const { data, error } = await supabase
+    .from('blog_posts')
+    .select('*')
+    .order('sort_order', { ascending: true });
+
+  if (error) {
+    console.error('Error fetching all blog posts:', error);
+    return [];
+  }
+  return data || [];
+}
 
 export async function getBlogPosts(): Promise<BlogPost[]> {
   const { data, error } = await supabase

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { getAllSocialLinks, deleteSocialLink, toggleSocialLinkActive } from "@/lib/social";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,6 +11,7 @@ import { Loader2, ExternalLink, Edit, Trash2, Eye, EyeOff } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 export default function AdminSocialPage() {
+  const router = useRouter();
   const [links, setLinks] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
@@ -34,9 +36,9 @@ export default function AdminSocialPage() {
     }
   };
 
-  const handleToggleActive = async (id: string) => {
+  const handleToggleActive = async (id: string, currentlyActive: boolean) => {
     try {
-      await toggleSocialLinkActive(id);
+      await toggleSocialLinkActive(id, !currentlyActive);
       toast({
         title: 'Success',
         description: 'Social link status updated',
@@ -152,7 +154,7 @@ export default function AdminSocialPage() {
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => handleToggleActive(link.id)}
+                      onClick={() => handleToggleActive(link.id, link.active)}
                     >
                       {link.active ? (
                         <EyeOff className="h-4 w-4" />

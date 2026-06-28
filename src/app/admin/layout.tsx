@@ -9,117 +9,109 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu } from "lucide-react";
 import { useState } from "react";
+import { AdminAuthProvider } from "@/components/admin/admin-auth-provider";
 
 const navLinks = [
+  { href: "/admin", label: "Dashboard" },
   { href: "/admin/hero", label: "Hero" },
   { href: "/admin/about", label: "About Me" },
-  { href: "/admin/awards", label: "Awards and Achievements" },
-  { href: "/admin/licences", label: "Licenses and Certifications" },
+  { href: "/admin/awards", label: "Awards" },
+  { href: "/admin/licences", label: "Licenses" },
   { href: "/admin/skills", label: "Skills" },
   { href: "/admin/projects", label: "Projects" },
   { href: "/admin/experience", label: "Experience" },
   { href: "/admin/blog", label: "Blog" },
-  { href: "/admin/social", label: "Contact" },
+  { href: "/admin/social", label: "Social" },
+  { href: "/admin/contact", label: "Messages" },
+  { href: "/admin/settings", label: "Settings" },
 ];
 
-export default function AdminLayout({ children }: { children: ReactNode }) {
+function AdminShell({ children }: { children: ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const isLoginPage = pathname === "/admin/login";
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
     router.push("/");
   };
 
+  if (isLoginPage) {
+    return <>{children}</>;
+  }
+
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <header className="border-b border-border/40 bg-background/95">
-        <div className="container flex h-14 items-center justify-between">
-          {/* Mobile menu trigger + title */}
-          <div className="flex items-center gap-4">
-            <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
-              <SheetTrigger asChild>
-                <Button
-                  variant="ghost"
-                  className="mr-2 px-0 text-base hover:bg-transparent focus-visible:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 md:hidden"
-                >
-                  <Menu className="h-6 w-6" />
-                  <span className="sr-only">Toggle Menu</span>
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="left" className="pr-0">
-                <div className="flex flex-col space-y-4">
+    <AdminAuthProvider>
+      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-foreground">
+        <header className="border-b border-slate-800/50 bg-slate-950/80 backdrop-blur-xl sticky top-0 z-40">
+          <div className="container flex h-14 items-center justify-between">
+            <div className="flex items-center gap-4">
+              <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+                <SheetTrigger asChild>
+                  <Button variant="ghost" className="md:hidden px-2 text-slate-300 hover:text-white">
+                    <Menu className="h-6 w-6" />
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="left" className="bg-slate-950 border-slate-800/50 pr-0 w-72">
                   <div className="mb-6">
-                    <h2 className="font-headline text-lg font-bold">Admin Panel</h2>
+                    <h2 className="font-headline text-lg font-bold text-cyan-400">CodeAndBe Admin</h2>
                   </div>
-                  <div className="flex flex-col space-y-3">
+                  <nav className="flex flex-col gap-2">
                     {navLinks.map((link) => (
                       <Link
                         key={link.href}
                         href={link.href}
                         onClick={() => setIsMobileMenuOpen(false)}
                         className={cn(
-                          "px-3 py-2 text-lg font-medium transition-colors hover:text-primary",
-                          pathname.startsWith(link.href) 
-                            ? "text-primary font-medium" 
-                            : "text-muted-foreground"
+                          "px-3 py-2 rounded-md text-sm transition-colors",
+                          pathname === link.href || (link.href !== "/admin" && pathname.startsWith(link.href))
+                            ? "bg-cyan-500/10 text-cyan-400 font-medium"
+                            : "text-slate-300 hover:text-cyan-400"
                         )}
                       >
                         {link.label}
                       </Link>
                     ))}
-                  </div>
-                  <div className="mt-6 pt-6 border-t border-border/40">
-                    <Button 
-                      variant="outline" 
-                      className="w-full" 
-                      onClick={() => {
-                        handleLogout();
-                        setIsMobileMenuOpen(false);
-                      }}
-                    >
-                      Logout
-                    </Button>
-                  </div>
-                </div>
-              </SheetContent>
-            </Sheet>
-            <h1 className="font-headline text-lg font-bold">Admin Panel</h1>
-          </div>
-
-          {/* Desktop navigation */}
-          <div className="hidden md:flex items-center gap-4 text-sm">
-            <nav className="flex items-center gap-4">
-              <Link 
-                href="/" 
-                className="text-muted-foreground hover:text-foreground transition-colors border border-border/40 px-3 py-1 rounded-md"
-              >
-                Back to site
+                  </nav>
+                  <Button variant="outline" className="w-full mt-6 border-cyan-500/30 text-cyan-400 hover:bg-cyan-950/20" onClick={handleLogout}>
+                    Logout
+                  </Button>
+                </SheetContent>
+              </Sheet>
+              <Link href="/admin" className="font-headline text-lg font-bold text-cyan-400">
+                CodeAndBe Admin
               </Link>
-              <span className="h-5 w-px bg-border"></span>
-              {navLinks.map((link) => (
+            </div>
+
+            <div className="hidden lg:flex items-center gap-3 text-sm overflow-x-auto">
+              <Link href="/" className="text-slate-300 hover:text-cyan-400 whitespace-nowrap">
+                View site
+              </Link>
+              {navLinks.slice(1, 8).map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
                   className={cn(
-                    "transition-colors hover:text-primary whitespace-nowrap",
-                    pathname.startsWith(link.href) 
-                      ? "text-primary font-medium" 
-                      : "text-muted-foreground"
+                    "whitespace-nowrap transition-colors hover:text-cyan-400",
+                    pathname.startsWith(link.href) ? "text-cyan-400 font-medium" : "text-slate-300"
                   )}
                 >
                   {link.label}
                 </Link>
               ))}
-            </nav>
-            <Button variant="outline" size="sm" onClick={handleLogout}>
-              Logout
-            </Button>
+              <Button variant="outline" size="sm" className="border-cyan-500/30 text-cyan-400 hover:bg-cyan-950/20" onClick={handleLogout}>
+                Logout
+              </Button>
+            </div>
           </div>
-        </div>
-      </header>
-      <main className="container py-8 max-w-3xl mx-auto">{children}</main>
-    </div>
+        </header>
+        <main className="container py-8 max-w-5xl mx-auto">{children}</main>
+      </div>
+    </AdminAuthProvider>
   );
+}
+
+export default function AdminLayout({ children }: { children: ReactNode }) {
+  return <AdminShell>{children}</AdminShell>;
 }

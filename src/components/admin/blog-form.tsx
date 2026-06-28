@@ -10,8 +10,15 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Upload, X } from 'lucide-react';
-
+import { slugify } from '@/lib/cms-utils';
+import {
+  X,
+  Loader2,
+  Upload,
+  ImageIcon,
+  Calendar,
+  Save,
+} from "lucide-react";
 type BlogFormProps = {
   post?: BlogPost;
   onSuccess?: () => void;
@@ -23,6 +30,7 @@ export default function BlogForm({ post, onSuccess }: BlogFormProps) {
   
   const [formData, setFormData] = useState({
     title: post?.title || '',
+    slug: post?.slug || '',
     excerpt: post?.excerpt || '',
     content: post?.content || '',
     url: post?.url || '',
@@ -30,6 +38,13 @@ export default function BlogForm({ post, onSuccess }: BlogFormProps) {
     published: post?.published || false,
     sort_order: post?.sort_order?.toString() || '0',
   });
+  const [slugManual, setSlugManual] = useState(!!post?.slug);
+
+  useEffect(() => {
+    if (!slugManual && formData.title) {
+      setFormData((prev) => ({ ...prev, slug: slugify(formData.title) }));
+    }
+  }, [formData.title, slugManual]);
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -84,10 +99,11 @@ export default function BlogForm({ post, onSuccess }: BlogFormProps) {
       
       const postData = {
         title: formData.title.trim(),
+        slug: formData.slug.trim() || slugify(formData.title),
         excerpt: formData.excerpt.trim(),
         content: formData.content.trim(),
-        url: formData.url.trim() || null,
-        image_url: imageUrl || null,
+        url: formData.url.trim() || '',
+        image_url: imageUrl || undefined,
         published: formData.published,
         sort_order: parseInt(formData.sort_order, 10) || 0,
       };
@@ -138,6 +154,20 @@ export default function BlogForm({ post, onSuccess }: BlogFormProps) {
         />
       </div>
       
+      <div>
+        <Label htmlFor="slug">Slug</Label>
+        <Input
+          id="slug"
+          name="slug"
+          value={formData.slug}
+          onChange={(e) => {
+            setSlugManual(true);
+            handleChange('slug', e.target.value);
+          }}
+          placeholder="auto-generated-from-title"
+        />
+      </div>
+
       <div>
         <Label htmlFor="excerpt">Excerpt *</Label>
         <Textarea

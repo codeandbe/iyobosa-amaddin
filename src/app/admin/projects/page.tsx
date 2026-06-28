@@ -2,97 +2,92 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { supabase } from "@/lib/supabase-client";
-import { getProjects, deleteProject, Project } from '@/lib/projects';
+import {
+  getAllProjects,
+  deleteProject,
+  toggleProjectPublished,
+  toggleProjectFeatured,
+  type Project,
+} from '@/lib/projects';
+import { getProjectImageUrl } from '@/lib/cms-utils';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { useToast } from '@/hooks/use-toast';
-import { Plus, Pencil, Trash2, ExternalLink, Github } from 'lucide-react';
+import { LoadingState, EmptyState } from '@/components/ui/content-states';
+import { Plus, Pencil, Trash2, ExternalLink, Github, Star } from 'lucide-react';
 import Image from 'next/image';
 
 export default function ProjectsAdminPage() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [deleteId, setDeleteId] = useState<string | null>(null);
   const router = useRouter();
   const { toast } = useToast();
-  const user = supabase.auth.getUser();
-
-  useEffect(() => {
-    fetchProjects();
-  }, []);
 
   const fetchProjects = async () => {
     try {
       setLoading(true);
-      const data = await getProjects();
-      setProjects(data);
-    } catch (error) {
-      console.error('Error loading projects:', error);
-      toast({
-        title: 'Error',
-        description: 'Failed to load projects',
-        variant: 'destructive',
-      });
+      setProjects(await getAllProjects());
+    } catch {
+      toast({ title: 'Error', description: 'Failed to load projects', variant: 'destructive' });
     } finally {
       setLoading(false);
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this project?')) return;
-    
+  useEffect(() => { fetchProjects(); }, []);
+
+  const handleDelete = async () => {
+    if (!deleteId) return;
     try {
-      await deleteProject(id);
-      setProjects(projects.filter(project => project.id !== id));
-      toast({
-        title: 'Success',
-        description: 'Project deleted successfully',
-      });
-    } catch (error) {
-      console.error('Error deleting project:', error);
-      toast({
-        title: 'Error',
-        description: 'Failed to delete project',
-        variant: 'destructive',
-      });
+      await deleteProject(deleteId);
+      setProjects((p) => p.filter((x) => x.id !== deleteId));
+      toast({ title: 'Deleted', description: 'Project removed successfully' });
+    } catch {
+      toast({ title: 'Error', description: 'Failed to delete project', variant: 'destructive' });
+    } finally {
+      setDeleteId(null);
     }
   };
 
-  const filteredProjects = projects.filter(project =>
-    project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    project.description.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const getImageUrl = (imageId: string) => {
-    const { data } = supabase.storage
-      .from('portfolio-assets')
-      .getPublicUrl(`projects/${imageId}`);
-    return data.publicUrl;
+  const handleToggle = async (id: string, field: 'published' | 'featured', value: boolean) => {
+    try {
+      const updated = field === 'published'
+        ? await toggleProjectPublished(id, value)
+        : await toggleProjectFeatured(id, value);
+      setProjects((p) => p.map((x) => (x.id === id ? updated : x)));
+      toast({ title: 'Updated', description: `Project ${field} status updated` });
+    } catch {
+      toast({ title: 'Error', description: 'Failed to update project', variant: 'destructive' });
+    }
   };
 
-  if (loading) {
-    return (
-      <div className="container mx-auto py-8">
-        <div className="flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
-        </div>
-      </div>
-    );
-  }
+  const filtered = projects.filter(
+    (p) =>
+      p.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (p.category ?? '').toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  if (loading) return <LoadingState message="Loading projects..." />;
 
   return (
-    <div className="container mx-auto py-8">
-      <div className="flex items-center gap-4 mb-8">
-        <div className="flex items-center gap-4">
-          <Button variant="outline" onClick={() => router.push('/admin')}>
-            ← Back to Dashboard
+    <div className="space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <Button variant="outline" size="sm" onClick={() => router.push('/admin')} className="mb-3">
+            ← Dashboard
           </Button>
-          <div>
-            <h1 className="text-3xl font-bold">Projects</h1>
-            <p className="text-muted-foreground mt-1">Showcase your portfolio projects</p>
-          </div>
+          <h1 className="text-3xl font-bold font-headline">Projects</h1>
+          <p className="text-muted-foreground">Manage portfolio projects, ordering, and visibility</p>
         </div>
         <Button onClick={() => router.push('/admin/projects/new')}>
           <Plus className="mr-2 h-4 w-4" />
@@ -100,103 +95,82 @@ export default function ProjectsAdminPage() {
         </Button>
       </div>
 
-      <div className="mb-6">
-        <Input
-          type="text"
-          placeholder="Search projects..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="max-w-md"
-        />
-      </div>
+      <Input
+        placeholder="Search by title or category..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        className="max-w-md"
+      />
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {filteredProjects.map((project) => (
-          <Card key={project.id} className="flex flex-col h-full">
-            <div className="relative h-48 w-full">
-              <Image
-                src={getImageUrl(project.image_id)}
-                alt={project.title}
-                fill
-                className="object-cover rounded-t-lg"
-              />
-            </div>
-            <CardHeader>
-              <CardTitle>{project.title}</CardTitle>
-            </CardHeader>
-            <CardContent className="flex-grow">
-              <p className="text-sm text-muted-foreground line-clamp-3">
-                {project.description}
-              </p>
-              <div className="mt-3 flex flex-wrap gap-1">
-                {project.tech_stack?.slice(0, 3).map((tech, i) => (
-                  <span 
-                    key={i}
-                    className="inline-flex items-center rounded-full bg-muted px-2.5 py-0.5 text-xs font-medium text-muted-foreground"
-                  >
-                    {tech}
-                  </span>
-                ))}
-                {project.tech_stack?.length > 3 && (
-                  <span className="inline-flex items-center rounded-full bg-muted px-2.5 py-0.5 text-xs font-medium text-muted-foreground">
-                    +{project.tech_stack.length - 3} more
-                  </span>
+      {filtered.length === 0 ? (
+        <EmptyState title="No projects found" description="Create your first project to get started." />
+      ) : (
+        <div className="grid gap-6 md:grid-cols-2">
+          {filtered.map((project) => (
+            <Card key={project.id}>
+              <div className="relative h-40 w-full">
+                <Image src={getProjectImageUrl(project)} alt={project.title} fill className="object-cover rounded-t-lg" />
+                {project.featured && (
+                  <Badge className="absolute top-2 right-2 gap-1"><Star className="h-3 w-3" />Featured</Badge>
                 )}
               </div>
-            </CardContent>
-            <CardFooter className="flex justify-between">
-              <div className="flex space-x-2">
-                {project.github_url && (
-                  <a
-                    href={project.github_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-muted-foreground hover:text-foreground"
-                  >
-                    <Github className="h-5 w-5" />
-                  </a>
-                )}
-                {project.live_url && (
-                  <a
-                    href={project.live_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-muted-foreground hover:text-foreground"
-                  >
-                    <ExternalLink className="h-5 w-5" />
-                  </a>
-                )}
-              </div>
-              <div className="flex space-x-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => router.push(`/admin/projects/${project.id}`)}
-                >
-                  <Pencil className="h-4 w-4 mr-1" />
-                  Edit
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handleDelete(project.id)}
-                  className="text-destructive hover:text-destructive"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </div>
-            </CardFooter>
-          </Card>
-        ))}
-      </div>
-
-      {filteredProjects.length === 0 && (
-        <div className="text-center py-12">
-          <p className="text-muted-foreground">
-            {searchTerm ? 'No projects match your search.' : 'No projects found. Create your first project to get started.'}
-          </p>
+              <CardHeader className="pb-2">
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    {project.category && <Badge variant="secondary" className="mb-1 text-xs">{project.category}</Badge>}
+                    <CardTitle className="text-lg">{project.title}</CardTitle>
+                    <p className="text-xs text-muted-foreground mt-1">Order: {project.sort_order} · {project.slug}</p>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <p className="text-sm text-muted-foreground line-clamp-2">{project.description}</p>
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-2">
+                    <Switch checked={project.published} onCheckedChange={(v) => handleToggle(project.id, 'published', v)} id={`pub-${project.id}`} />
+                    <Label htmlFor={`pub-${project.id}`} className="text-xs">Published</Label>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Switch checked={project.featured} onCheckedChange={(v) => handleToggle(project.id, 'featured', v)} id={`feat-${project.id}`} />
+                    <Label htmlFor={`feat-${project.id}`} className="text-xs">Featured</Label>
+                  </div>
+                </div>
+              </CardContent>
+              <CardFooter className="flex justify-between">
+                <div className="flex gap-2">
+                  {project.github_url && (
+                    <a href={project.github_url} target="_blank" rel="noopener noreferrer"><Github className="h-4 w-4 text-muted-foreground hover:text-foreground" /></a>
+                  )}
+                  {project.live_url && (
+                    <a href={project.live_url} target="_blank" rel="noopener noreferrer"><ExternalLink className="h-4 w-4 text-muted-foreground hover:text-foreground" /></a>
+                  )}
+                </div>
+                <div className="flex gap-2">
+                  <Button variant="outline" size="sm" onClick={() => router.push(`/admin/projects/${project.id}`)}>
+                    <Pencil className="h-4 w-4" />
+                  </Button>
+                  <Button variant="outline" size="sm" className="text-destructive" onClick={() => setDeleteId(project.id)}>
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+              </CardFooter>
+            </Card>
+          ))}
         </div>
       )}
+
+      <AlertDialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete project?</AlertDialogTitle>
+            <AlertDialogDescription>This action cannot be undone.</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground">Delete</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

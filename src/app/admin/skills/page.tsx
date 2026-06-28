@@ -6,18 +6,9 @@ import { getSkillCategories, deleteSkillCategory } from "@/lib/skills";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Plus, Edit, Trash2, Code, Database, Globe, HardDrive, Layers, Smartphone, GitBranch } from "lucide-react";
+import { Loader2, Plus, Edit, Trash2 } from "lucide-react";
+import { DynamicIcon } from '@/components/ui/dynamic-icon';
 import { useToast } from "@/hooks/use-toast";
-
-const iconMap = {
-  Code,
-  Database,
-  Globe,
-  HardDrive,
-  Layers,
-  Smartphone,
-  GitBranch,
-};
 
 export default function AdminSkillsPage() {
   const [categories, setCategories] = useState<any[]>([]);
@@ -109,20 +100,17 @@ export default function AdminSkillsPage() {
         </Card>
       ) : (
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-          {categories.map((category) => {
-            const IconComponent = iconMap[category.icon as keyof typeof iconMap] || Code;
-            
-            return (
-              <Card key={category.id}>
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <IconComponent className="h-8 w-8 text-primary" />
-                      <div>
-                        <CardTitle className="font-headline text-xl">{category.category}</CardTitle>
-                        <CardDescription>{category.skills.length} skills</CardDescription>
-                      </div>
+          {categories.map((category) => (
+            <Card key={category.id}>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <DynamicIcon name={category.icon || 'Code'} className="h-8 w-8 text-cyan-400" />
+                    <div>
+                      <CardTitle className="font-headline text-xl">{category.category}</CardTitle>
+                      <CardDescription>{category.skills.length} skills</CardDescription>
                     </div>
+                  </div>
                     <div className="flex items-center gap-2">
                       <Button variant="outline" size="sm" asChild>
                         <Link href={`/admin/skills/category/${category.id}/edit`}>
@@ -157,8 +145,7 @@ export default function AdminSkillsPage() {
                   </div>
                 </CardContent>
               </Card>
-            );
-          })}
+          ))}
         </div>
       )}
     </div>

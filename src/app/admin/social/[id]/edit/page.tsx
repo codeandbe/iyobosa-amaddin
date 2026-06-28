@@ -10,8 +10,13 @@ export const metadata: Metadata = {
   title: 'Edit Social Link | Admin',
 };
 
-export default async function EditSocialLinkPage({ params }: { params: { id: string } }) {
-  const link = await getSocialLinkById(params.id);
+type PageProps = {
+  params: Promise<{ id: string }>;
+};
+
+export default async function EditSocialLinkPage({ params }: PageProps) {
+  const { id } = await params;
+  const link = await getSocialLinkById(id);
 
   if (!link) {
     notFound();

@@ -99,13 +99,10 @@ export async function deleteSocialLink(id: string) {
   }
 }
 
-export async function toggleSocialLinkActive(id: string) {
+export async function toggleSocialLinkActive(id: string, active: boolean) {
   const { data, error } = await supabase
     .from('social_links')
-    .update({ 
-      active: supabase.rpc('not'),
-      updated_at: new Date().toISOString() 
-    })
+    .update({ active, updated_at: new Date().toISOString() })
     .eq('id', id)
     .select()
     .single();

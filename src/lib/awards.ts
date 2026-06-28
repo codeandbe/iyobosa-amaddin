@@ -18,6 +18,7 @@ export async function getAwards(): Promise<Award[]> {
     const { data, error } = await supabase
       .from('awards_and_achievements')
       .select('*')
+      .eq('published', true)
       .order('sort_order', { ascending: true });
 
     if (error) {

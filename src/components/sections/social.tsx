@@ -3,7 +3,7 @@
 import { getSocialLinks } from "@/lib/social";
 import { useEffect, useState } from 'react';
 import { Loader2 } from 'lucide-react';
-import * as Icons from 'lucide-react';
+import { DynamicIcon } from '@/components/ui/dynamic-icon';
 
 const SocialSection = () => {
   const [links, setLinks] = useState<any[]>([]);
@@ -23,11 +23,6 @@ const SocialSection = () => {
 
     loadLinks();
   }, []);
-
-  const getIconComponent = (iconName: string) => {
-    const IconComponent = (Icons as any)[iconName];
-    return IconComponent || Icons.ExternalLink;
-  };
 
   if (loading) {
     return (
@@ -66,21 +61,21 @@ const SocialSection = () => {
         </div>
 
         <div className="flex flex-wrap justify-center gap-6 md:gap-8">
-          {links.map((link) => {
-            const IconComponent = getIconComponent(link.icon);
-            return (
-              <a
-                key={link.id}
-                href={link.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group flex items-center justify-center w-16 h-16 md:w-20 md:h-20 bg-card border rounded-xl hover:bg-accent hover:border-accent-foreground/20 transition-all duration-200 hover:scale-110"
-                aria-label={link.platform}
-              >
-                <IconComponent className="w-8 h-8 md:w-10 md:h-10 text-muted-foreground group-hover:text-foreground transition-colors" />
-              </a>
-            );
-          })}
+          {links.map((link) => (
+            <a
+              key={link.id}
+              href={link.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex items-center justify-center w-16 h-16 md:w-20 md:h-20 bg-card border rounded-xl hover:bg-accent hover:border-accent-foreground/20 transition-all duration-200 hover:scale-110"
+              aria-label={link.platform}
+            >
+              <DynamicIcon 
+                name={link.icon} 
+                className="w-8 h-8 md:w-10 md:h-10 text-muted-foreground group-hover:text-foreground transition-colors" 
+              />
+            </a>
+          ))}
         </div>
 
         <div className="mt-12 text-center">
