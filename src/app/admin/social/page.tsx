@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { getAllSocialLinks, deleteSocialLink, toggleSocialLinkActive } from "@/lib/social";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,7 +10,6 @@ import { Loader2, ExternalLink, Edit, Trash2, Eye, EyeOff } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 export default function AdminSocialPage() {
-  const router = useRouter();
   const [links, setLinks] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
@@ -85,18 +83,21 @@ export default function AdminSocialPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <Button variant="outline" onClick={() => router.push('/admin')}>
-            ← Back to Dashboard
-          </Button>
-          <div>
-            <h2 className="text-2xl font-bold">Social Media Links</h2>
-            <p className="text-muted-foreground mt-1">Manage your social media profiles and links</p>
-          </div>
+        <div>
+          <h2 className="text-3xl font-bold font-headline text-cyan-400">Social Links</h2>
+          <p className="text-slate-400 mt-2">Manage your social media profiles and links</p>
         </div>
-        <Link href="/admin/social/new">
-          <Button>Add Social Link</Button>
-        </Link>
+        <div className="flex gap-2">
+          <Button variant="outline" className="border-slate-700 text-slate-300 hover:bg-slate-800" asChild>
+            <Link href="/admin">Back to Dashboard</Link>
+          </Button>
+          <Button className="bg-cyan-500 hover:bg-cyan-400 text-slate-950" asChild>
+            <Link href="/admin/social/new">
+              <Plus className="mr-2 h-4 w-4" />
+              Add Link
+            </Link>
+          </Button>
+        </div>
       </div>
 
       {links.length === 0 ? (

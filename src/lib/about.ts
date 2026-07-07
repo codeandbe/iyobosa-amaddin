@@ -23,7 +23,15 @@ export async function getAboutMeSection(): Promise<AboutMeRecord | null> {
     .maybeSingle();
 
   if (error) {
-    console.error('Error fetching about me section from Supabase', error);
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Supabase query failed:', {
+        table: 'about_me_sections',
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+        code: error.code,
+      });
+    }
     return null;
   }
 

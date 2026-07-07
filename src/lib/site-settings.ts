@@ -10,7 +10,16 @@ export async function getSiteSetting(key: string): Promise<SiteSettingValue | nu
     .maybeSingle();
 
   if (error) {
-    console.error(`Error fetching site setting ${key}:`, error);
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Supabase query failed:', {
+        table: 'site_settings',
+        key,
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+        code: error.code,
+      });
+    }
     return null;
   }
 
@@ -31,7 +40,16 @@ export async function setSiteSetting(key: string, value: SiteSettingValue): Prom
     .upsert({ key, value, updated_at: new Date().toISOString() });
 
   if (error) {
-    console.error(`Error setting site setting ${key}:`, error);
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Supabase query failed:', {
+        table: 'site_settings',
+        key,
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+        code: error.code,
+      });
+    }
     return false;
   }
 
@@ -44,7 +62,15 @@ export async function getAllSiteSettings(): Promise<Record<string, SiteSettingVa
     .select('key, value');
 
   if (error) {
-    console.error('Error fetching site settings:', error);
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Supabase query failed:', {
+        table: 'site_settings',
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+        code: error.code,
+      });
+    }
     return {};
   }
 

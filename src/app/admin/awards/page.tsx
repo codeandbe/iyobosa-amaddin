@@ -1,8 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { supabase } from "@/lib/supabase-client";
 import { getAwards, deleteAward, Award } from '@/lib/awards';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -16,7 +14,6 @@ export default function AwardsAdminPage() {
   const [awards, setAwards] = useState<Award[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-  const router = useRouter();
   const { toast } = useToast();
 
   useEffect(() => {
@@ -78,20 +75,22 @@ export default function AwardsAdminPage() {
 
   return (
     <div className="container mx-auto py-8">
-      <div className="flex items-center gap-4 mb-8">
-        <div className="flex items-center gap-4">
-          <Button variant="outline" onClick={() => router.push('/admin')}>
-            ← Back to Dashboard
-          </Button>
-          <div>
-            <h1 className="text-3xl font-bold">Awards & Achievements</h1>
-            <p className="text-muted-foreground mt-1">Manage your awards and achievements</p>
-          </div>
+      <div className="flex items-center justify-between mb-8">
+        <div>
+          <h1 className="text-3xl font-bold font-headline text-cyan-400">Awards & Achievements</h1>
+          <p className="text-slate-400 mt-2">Manage your awards and achievements</p>
         </div>
-        <Button onClick={() => router.push('/admin/awards/new')}>
-          <Plus className="mr-2 h-4 w-4" />
-          New Award
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" className="border-slate-700 text-slate-300 hover:bg-slate-800" asChild>
+            <Link href="/admin">Back to Dashboard</Link>
+          </Button>
+          <Button className="bg-cyan-500 hover:bg-cyan-400 text-slate-950" asChild>
+            <Link href="/admin/awards/new">
+              <Plus className="mr-2 h-4 w-4" />
+              New Award
+            </Link>
+          </Button>
+        </div>
       </div>
 
       <div className="mb-6">

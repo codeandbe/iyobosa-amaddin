@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import {
   getAllProjects,
   deleteProject,
@@ -24,13 +23,13 @@ import { useToast } from '@/hooks/use-toast';
 import { LoadingState, EmptyState } from '@/components/ui/content-states';
 import { Plus, Pencil, Trash2, ExternalLink, Github, Star } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
 
 export default function ProjectsAdminPage() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [deleteId, setDeleteId] = useState<string | null>(null);
-  const router = useRouter();
   const { toast } = useToast();
 
   const fetchProjects = async () => {
@@ -81,18 +80,22 @@ export default function ProjectsAdminPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex items-center justify-between">
         <div>
-          <Button variant="outline" size="sm" onClick={() => router.push('/admin')} className="mb-3">
-            ← Dashboard
-          </Button>
-          <h1 className="text-3xl font-bold font-headline">Projects</h1>
-          <p className="text-muted-foreground">Manage portfolio projects, ordering, and visibility</p>
+          <h1 className="text-3xl font-bold font-headline text-cyan-400">Projects</h1>
+          <p className="text-slate-400 mt-2">Manage portfolio projects, ordering, and visibility</p>
         </div>
-        <Button onClick={() => router.push('/admin/projects/new')}>
-          <Plus className="mr-2 h-4 w-4" />
-          Add Project
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" className="border-slate-700 text-slate-300 hover:bg-slate-800" asChild>
+            <Link href="/admin">Back to Dashboard</Link>
+          </Button>
+          <Button className="bg-cyan-500 hover:bg-cyan-400 text-slate-950" asChild>
+            <Link href="/admin/projects/new">
+              <Plus className="mr-2 h-4 w-4" />
+              Add Project
+            </Link>
+          </Button>
+        </div>
       </div>
 
       <Input

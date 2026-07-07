@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import Link from "next/link";
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -57,6 +58,14 @@ export default function AdminLoginPage() {
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? "Signing in..." : "Sign in"}
             </Button>
+            <div className="text-center">
+              <Link 
+                href="/admin/forgot-password" 
+                className="text-sm text-cyan-400 hover:text-cyan-300"
+              >
+                Forgot Password?
+              </Link>
+            </div>
           </form>
         </CardContent>
       </Card>

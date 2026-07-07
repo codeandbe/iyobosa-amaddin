@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase-client";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
@@ -13,9 +12,9 @@ import { useToast } from "@/hooks/use-toast";
 import { LoadingState } from "@/components/ui/content-states";
 import { revalidatePortfolioPages } from "@/app/revalidate-actions";
 import { BRAND } from "@/lib/fallbacks";
+import Link from "next/link";
 
 export default function AdminAboutPage() {
-  const router = useRouter();
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -94,12 +93,14 @@ export default function AdminAboutPage() {
 
   return (
     <form onSubmit={onSubmit} className="space-y-4">
-      <div className="flex items-center gap-4 mb-6">
-        <Button type="button" variant="outline" onClick={() => router.push('/admin')}>← Dashboard</Button>
+      <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="text-2xl font-bold font-headline">Edit About Me</h2>
-          <p className="text-muted-foreground mt-1">Bio, positioning, and profile image</p>
+          <h2 className="text-3xl font-bold font-headline text-cyan-400">About Me</h2>
+          <p className="text-slate-400 mt-2">Bio, positioning, and profile image</p>
         </div>
+        <Button variant="outline" className="border-slate-700 text-slate-300 hover:bg-slate-800" asChild>
+          <Link href="/admin">Back to Dashboard</Link>
+        </Button>
       </div>
       {error && <p className="text-sm text-destructive">{error}</p>}
       <div>

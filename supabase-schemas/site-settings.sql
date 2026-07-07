@@ -16,6 +16,11 @@ CREATE TABLE IF NOT EXISTS site_settings (
 -- Enable Row Level Security
 ALTER TABLE site_settings ENABLE ROW LEVEL SECURITY;
 
+-- Drop existing policies if they exist (for idempotent runs)
+DROP POLICY IF EXISTS "settings_auth_read" ON site_settings;
+DROP POLICY IF EXISTS "settings_auth_update" ON site_settings;
+DROP POLICY IF EXISTS "settings_auth_insert" ON site_settings;
+
 -- Policy: Authenticated users can read settings
 CREATE POLICY "settings_auth_read" ON site_settings
     FOR SELECT
@@ -39,6 +44,9 @@ BEGIN
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
+
+-- Drop existing trigger if it exists (for idempotent runs)
+DROP TRIGGER IF EXISTS update_site_settings_updated_at ON site_settings;
 
 -- Trigger to auto-update updated_at
 CREATE TRIGGER update_site_settings_updated_at

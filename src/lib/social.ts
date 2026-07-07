@@ -20,7 +20,15 @@ export async function getSocialLinks(): Promise<SocialLink[]> {
     .order('sort_order', { ascending: true });
 
   if (error) {
-    console.error('Error fetching social links:', error);
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Supabase query failed:', {
+        table: 'social_links',
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+        code: error.code,
+      });
+    }
     return [];
   }
 
@@ -34,7 +42,15 @@ export async function getAllSocialLinks(): Promise<SocialLink[]> {
     .order('sort_order', { ascending: true });
 
   if (error) {
-    console.error('Error fetching all social links:', error);
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Supabase query failed:', {
+        table: 'social_links',
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+        code: error.code,
+      });
+    }
     return [];
   }
 
@@ -49,7 +65,16 @@ export async function getSocialLinkById(id: string): Promise<SocialLink | null> 
     .single();
 
   if (error) {
-    console.error(`Error fetching social link ${id}:`, error);
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Supabase query failed:', {
+        table: 'social_links',
+        id,
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+        code: error.code,
+      });
+    }
     return null;
   }
 
@@ -64,7 +89,15 @@ export async function createSocialLink(link: Omit<SocialLink, 'id' | 'created_at
     .single();
 
   if (error) {
-    console.error('Error creating social link:', error);
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Supabase query failed:', {
+        table: 'social_links',
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+        code: error.code,
+      });
+    }
     throw error;
   }
 
@@ -83,7 +116,16 @@ export async function updateSocialLink(
     .single();
 
   if (error) {
-    console.error(`Error updating social link ${id}:`, error);
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Supabase query failed:', {
+        table: 'social_links',
+        id,
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+        code: error.code,
+      });
+    }
     throw error;
   }
 
@@ -94,7 +136,16 @@ export async function deleteSocialLink(id: string) {
   const { error } = await supabase.from('social_links').delete().eq('id', id);
 
   if (error) {
-    console.error(`Error deleting social link ${id}:`, error);
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Supabase query failed:', {
+        table: 'social_links',
+        id,
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+        code: error.code,
+      });
+    }
     throw error;
   }
 }
@@ -108,7 +159,16 @@ export async function toggleSocialLinkActive(id: string, active: boolean) {
     .single();
 
   if (error) {
-    console.error(`Error toggling social link ${id}:`, error);
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Supabase query failed:', {
+        table: 'social_links',
+        id,
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+        code: error.code,
+      });
+    }
     throw error;
   }
 

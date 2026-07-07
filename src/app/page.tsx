@@ -1,5 +1,7 @@
 import HeroSection from '@/components/sections/hero';
 import AboutMeHome from '@/components/sections/about-me-home';
+import AwardsHome from '@/components/sections/awards-home';
+import LicencesHome from '@/components/sections/licences-home';
 import Header from '@/components/layout/header';
 import Footer from '@/components/layout/footer';
 import StatsStrip from '@/components/sections/stats-strip';
@@ -18,6 +20,8 @@ export default function Home() {
         <StatsStrip />
         <FeaturedProjectsSection />
         <WhatIBuild />
+        <AwardsHome />
+        <LicencesHome />
         <CMSHighlight />
         <FinalCTA />
       </main>

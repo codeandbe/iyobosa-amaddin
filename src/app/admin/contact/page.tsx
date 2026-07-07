@@ -83,15 +83,13 @@ export default function AdminContactPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <Button variant="outline" onClick={() => router.push('/admin')}>
-            ← Back to Dashboard
-          </Button>
-          <div>
-            <h2 className="text-2xl font-bold">Contact Messages</h2>
-            <p className="text-muted-foreground mt-1">Manage messages from your contact form</p>
-          </div>
+        <div>
+          <h2 className="text-3xl font-bold font-headline text-cyan-400">Contact Messages</h2>
+          <p className="text-slate-400 mt-2">View and manage messages from your contact form</p>
         </div>
+        <Button variant="outline" className="border-slate-700 text-slate-300 hover:bg-slate-800" asChild>
+          <Link href="/admin">Back to Dashboard</Link>
+        </Button>
       </div>
 
       {messages.length === 0 ? (

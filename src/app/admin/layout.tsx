@@ -30,14 +30,14 @@ function AdminShell({ children }: { children: ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const isLoginPage = pathname === "/admin/login";
+  const isPublicRoute = pathname === "/admin/login" || pathname === "/admin/forgot-password" || pathname === "/admin/reset-password";
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
     router.push("/");
   };
 
-  if (isLoginPage) {
+  if (isPublicRoute) {
     return <>{children}</>;
   }
 
