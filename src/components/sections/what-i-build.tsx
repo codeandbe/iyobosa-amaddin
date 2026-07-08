@@ -35,7 +35,7 @@ const capabilities = [
 export default function WhatIBuild() {
   return (
     <section className="py-20 md:py-28 bg-slate-950">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto">
         <div className="text-center mb-16">
           <h2 className="font-headline text-3xl sm:text-4xl font-bold tracking-tight mb-4">
             What I Build

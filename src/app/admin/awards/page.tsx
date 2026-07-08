@@ -76,12 +76,12 @@ export default function AwardsAdminPage() {
 
   return (
     <div className="container mx-auto py-8">
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
         <div>
-          <h1 className="text-3xl font-bold font-headline text-cyan-400">Awards & Achievements</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold font-headline text-cyan-400">Awards & Achievements</h1>
           <p className="text-slate-400 mt-2">Manage your awards and achievements</p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <Button variant="outline" className="border-slate-700 text-slate-300 hover:bg-slate-800" asChild>
             <Link href="/admin">Back to Dashboard</Link>
           </Button>

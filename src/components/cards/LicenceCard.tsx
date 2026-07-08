@@ -24,7 +24,7 @@ export const LicenceCard: React.FC<{ licence: LicenceProps }> = ({ licence }) =>
     <>
       <Card className="flex flex-col w-full h-[420px] overflow-hidden">
         <div className="relative h-40 w-full bg-gray-800">
-          <OptimizedImage src={licence.image_url ?? undefined} imageId={licence.image_id ?? undefined} alt={licence.title} fill className="object-cover" />
+          <OptimizedImage src={licence.image_url ?? undefined} imageId={licence.image_id ? `licences/${licence.image_id}` : undefined} alt={licence.title} fill className="object-cover" />
         </div>
         <CardHeader className="px-4 pt-4">
           <h3 className="font-headline text-lg font-bold line-clamp-2">{licence.title}</h3>
@@ -45,7 +45,7 @@ export const LicenceCard: React.FC<{ licence: LicenceProps }> = ({ licence }) =>
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
           <div className="max-w-2xl w-full bg-slate-900 rounded-lg overflow-hidden">
             <div className="relative h-56 w-full">
-              <OptimizedImage src={licence.image_url ?? undefined} imageId={licence.image_id ?? undefined} alt={licence.title} fill className="object-cover" />
+              <OptimizedImage src={licence.image_url ?? undefined} imageId={licence.image_id ? `licences/${licence.image_id}` : undefined} alt={licence.title} fill className="object-cover" />
             </div>
             <div className="p-6">
               <h3 className="font-headline text-2xl mb-2">{licence.title}</h3>

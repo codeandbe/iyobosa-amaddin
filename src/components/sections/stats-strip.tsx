@@ -16,7 +16,7 @@ const StatsStrip = async () => {
 
   return (
     <section className="border-y border-slate-800 bg-slate-900/50 backdrop-blur-sm">
-      <div className="container mx-auto px-4 py-12">
+      <div className="container mx-auto py-12">
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
           {statCards.map((stat) => {
             const Icon = stat.icon;

@@ -135,9 +135,9 @@ export default function AdminHeroPage() {
 
   return (
     <form onSubmit={onSubmit} className="space-y-4">
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-6">
         <div>
-          <h2 className="text-3xl font-bold font-headline text-cyan-400">Hero Section</h2>
+          <h2 className="text-2xl sm:text-3xl font-bold font-headline text-cyan-400">Hero Section</h2>
           <p className="text-slate-400 mt-2">Landing headline and call-to-action buttons</p>
         </div>
         <Button variant="outline" className="border-slate-700 text-slate-300 hover:bg-slate-800" asChild>
