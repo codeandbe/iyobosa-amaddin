@@ -8,9 +8,10 @@ import { SectionHeader } from '@/components/ui/section-header';
 import { AnimatedSection } from '@/components/ui/animated-section';
 import { getProjects, getProjectCategories, type Project } from '@/lib/projects';
 import { getProjectImageUrl } from '@/lib/cms-utils';
+import { resolveImageUrl } from '@/lib/utils/image-url';
+import OptimizedImage from '@/components/ui/OptimizedImage';
 import { LoadingState, EmptyState, ErrorState } from '@/components/ui/content-states';
 import { Github, ExternalLink, Star, Calendar, Tag } from 'lucide-react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 
@@ -102,13 +103,13 @@ export default function ProjectsGallery() {
         ) : (
           <div className="mt-12 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
             {filtered.map((project, index) => {
-              const imageUrl = getProjectImageUrl(project);
+              const imageUrl = resolveImageUrl(project.image_url ?? null, project.image_id ? `projects/${project.image_id}` : null);
               return (
                 <AnimatedSection key={project.id} delay={index * 100}>
                   <Card className="flex flex-col overflow-hidden bg-slate-900/50 backdrop-blur-xl border-slate-700/50 shadow-xl hover:shadow-cyan-500/10 hover:-translate-y-1 transition-all duration-300">
                     <div className="relative h-48 w-full overflow-hidden bg-slate-800">
-                      <Image
-                        src={imageUrl}
+                      <OptimizedImage
+                        src={imageUrl ?? undefined}
                         alt={project.title}
                         fill
                         className="object-cover"

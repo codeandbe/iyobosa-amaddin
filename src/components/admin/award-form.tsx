@@ -10,7 +10,8 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Image as ImageIcon, X } from 'lucide-react';
-import Image from 'next/image';
+import OptimizedImage from '@/components/ui/OptimizedImage';
+import { getStoragePublicUrl } from '@/lib/cms-utils';
 
 type AwardFormProps = {
   award?: Award;
@@ -36,7 +37,7 @@ export default function AwardForm({ award }: AwardFormProps) {
 
   useEffect(() => {
     if (award?.image_id) {
-      setImagePreview(`https://divlxdqckjoijfmeydvo.supabase.co/storage/v1/object/public/portfolio-assets/awards/${award.image_id}`);
+      setImagePreview(getStoragePublicUrl(`awards/${award.image_id}`));
     }
   }, [award]);
 
@@ -249,7 +250,7 @@ export default function AwardForm({ award }: AwardFormProps) {
           <div className="flex items-center gap-4">
             {imagePreview ? (
               <div className="relative w-32 h-32 border rounded-lg overflow-hidden">
-                <Image
+                <OptimizedImage
                   src={imagePreview}
                   alt="Award preview"
                   fill

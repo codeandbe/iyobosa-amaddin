@@ -2,7 +2,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { getAwards } from "@/lib/awards";
 import { ExternalLink, Calendar } from "lucide-react";
-import Image from "next/image";
+import OptimizedImage from '@/components/ui/OptimizedImage';
+import { resolveImageUrl } from '@/lib/utils/image-url';
 import Link from "next/link";
 
 const AwardsSection = async () => {
@@ -27,15 +28,13 @@ const AwardsSection = async () => {
                 ) : (
                     <div className="mt-12 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
                         {awards.map((award) => {
-                            const imageUrl = award.image_id 
-                                ? `https://divlxdqckjoijfmeydvo.supabase.co/storage/v1/object/public/portfolio-assets/awards/${award.image_id}`
-                                : "https://picsum.photos/seed/award/600/400";
+                            const imageUrl = resolveImageUrl((award as any).image_url, award.image_id ? `awards/${award.image_id}` : null);
                             
                             return (
                                 <Card key={award.id} className="flex flex-col overflow-hidden">
                                     <div className="relative h-48 w-full overflow-hidden bg-gray-100 dark:bg-gray-800">
-                                        <Image
-                                            src={imageUrl}
+                                        <OptimizedImage
+                                            src={imageUrl ?? undefined}
                                             alt={award.title}
                                             fill
                                             className="object-contain"

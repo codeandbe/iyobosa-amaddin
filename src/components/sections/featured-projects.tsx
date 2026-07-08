@@ -2,10 +2,10 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { getFeaturedProjects } from '@/lib/projects';
-import { getProjectImageUrl } from '@/lib/cms-utils';
+import { resolveImageUrl } from '@/lib/utils/image-url';
+import OptimizedImage from '@/components/ui/OptimizedImage';
 import { getFeaturedProjectsHomeLimit } from '@/lib/site-settings';
 import { Github, ExternalLink, Star, Calendar, Tag } from 'lucide-react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { EmptyState } from '@/components/ui/content-states';
 
@@ -36,12 +36,12 @@ const FeaturedProjectsSection = async () => {
         ) : (
           <div className="mt-12 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
             {projects.map((project) => {
-              const imageUrl = getProjectImageUrl(project);
+              const imageUrl = resolveImageUrl(project.image_url ?? null, project.image_id ? `projects/${project.image_id}` : null);
               return (
                 <Card key={project.id} className="flex flex-col overflow-hidden border-border/60 hover:border-primary/30 transition-colors">
-                  <div className="relative h-48 w-full overflow-hidden bg-muted">
-                    <Image
-                      src={imageUrl}
+                    <div className="relative h-48 w-full overflow-hidden bg-muted">
+                    <OptimizedImage
+                      src={imageUrl ?? undefined}
                       alt={project.title}
                       fill
                       className="object-cover"

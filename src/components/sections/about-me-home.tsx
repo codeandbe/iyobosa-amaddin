@@ -4,7 +4,7 @@ import { getAboutMeSection } from '@/lib/about';
 import { BRAND } from '@/lib/fallbacks';
 import { SectionHeader } from '@/components/ui/section-header';
 import { AnimatedSection } from '@/components/ui/animated-section';
-import Image from 'next/image';
+import OptimizedImage from '@/components/ui/OptimizedImage';
 import { User, MapPin, Calendar, Mail, Linkedin, Github, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
@@ -40,7 +40,7 @@ const AboutMeHome = async () => {
               <div className="relative aspect-square max-w-md mx-auto lg:max-w-full">
                 {profileImageUrl ? (
                   <div className="relative w-full h-full rounded-2xl overflow-hidden bg-slate-800/50 border border-slate-700/50 shadow-2xl">
-                    <Image
+                    <OptimizedImage
                       src={profileImageUrl}
                       alt="Profile"
                       fill

@@ -6,6 +6,8 @@ import { SectionHeader } from '@/components/ui/section-header';
 import { AnimatedSection } from '@/components/ui/animated-section';
 import { getBlogPosts } from "@/lib/blog";
 import { ArrowRight, Calendar, Clock } from "lucide-react";
+import OptimizedImage from '@/components/ui/OptimizedImage';
+import { resolveImageUrl } from '@/lib/utils/image-url';
 import Link from "next/link";
 import { useEffect, useState } from 'react';
 import { EmptyState, LoadingState } from '@/components/ui/content-states';
@@ -77,15 +79,17 @@ const BlogSection = () => {
                         <AnimatedSection key={post.id} delay={index * 100}>
                           <Card className="flex flex-col bg-slate-900/50 backdrop-blur-xl border-slate-700/50 shadow-xl hover:shadow-cyan-500/10 hover:-translate-y-1 transition-all duration-300">
                               <CardHeader>
-                                  {post.image_url && (
+                                    {post.image_url && (
                                       <div className="w-full h-48 bg-slate-800 rounded-lg mb-4 overflow-hidden">
-                                          <img 
-                                              src={post.image_url} 
-                                              alt={post.title}
-                                              className="w-full h-full object-cover"
-                                          />
+                                        <OptimizedImage
+                                        src={resolveImageUrl(post.image_url, post.image_id ?? null)}
+                                        alt={post.title}
+                                        fill={false}
+                                        className="w-full h-full object-cover"
+                                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                        />
                                       </div>
-                                  )}
+                                    )}
                                   {post.category && (
                                     <Badge className="w-fit bg-cyan-500/10 border-cyan-500/30 text-cyan-400 text-xs mb-2">
                                       {post.category}

@@ -5,7 +5,8 @@ import { Badge } from '@/components/ui/badge';
 import { SectionHeader } from '@/components/ui/section-header';
 import { AnimatedSection } from '@/components/ui/animated-section';
 import { Award, Calendar, ExternalLink, CheckCircle } from 'lucide-react';
-import Image from 'next/image';
+import LicenceCard from '@/components/cards/LicenceCard';
+import OptimizedImage from '@/components/ui/OptimizedImage';
 import Link from 'next/link';
 
 const LicencesHome = async () => {
@@ -30,87 +31,13 @@ const LicencesHome = async () => {
         />
 
         <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {licences.map((licence, index) => {
-            const imageSrc = resolveImageUrl((licence as any).image_url, licence.image_id);
-            
-            return (
-              <AnimatedSection key={licence.id} delay={index * 100}>
-                <Card className="bg-slate-900/50 backdrop-blur-xl border-slate-700/50 hover:border-cyan-500/50 transition-all duration-300 hover:scale-105 group">
-                  <CardContent className="p-6">
-                    {/* License Image */}
-                    {imageSrc && (
-                      <div className="relative w-full h-48 mb-4 rounded-lg overflow-hidden bg-slate-800/50">
-                        <Image
-                          src={imageSrc}
-                          alt={licence.title}
-                          fill
-                          className="object-cover group-hover:scale-110 transition-transform duration-300"
-                        />
-                      </div>
-                    )}
-
-                  {/* License Content */}
-                  <div className="space-y-3">
-                    <div className="flex items-start justify-between gap-2">
-                      <h3 className="font-headline text-lg font-bold text-white group-hover:text-cyan-400 transition-colors">
-                        {licence.title}
-                      </h3>
-                      {licence.credential_url && (
-                        <Link 
-                          href={licence.credential_url} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="text-cyan-400 hover:text-cyan-300"
-                        >
-                          <ExternalLink className="h-4 w-4" />
-                        </Link>
-                      )}
-                    </div>
-
-                    <Badge variant="outline" className="bg-cyan-500/10 border-cyan-500/30 text-cyan-400">
-                      {licence.issuer}
-                    </Badge>
-
-                    <p className="text-sm text-slate-300 leading-relaxed line-clamp-3">
-                      {licence.description}
-                    </p>
-
-                    <div className="flex items-center justify-between text-xs text-slate-400">
-                      <div className="flex items-center gap-2">
-                        <Calendar className="h-3 w-3" />
-                        <span>
-                          Issued: {new Date(licence.issue_date).toLocaleDateString('en-US', {
-                            year: 'numeric',
-                            month: 'short',
-                            day: 'numeric'
-                          })}
-                        </span>
-                      </div>
-                      {licence.expiry_date && (
-                        <div className="flex items-center gap-2">
-                          <CheckCircle className="h-3 w-3" />
-                          <span>
-                            Expires: {new Date(licence.expiry_date).toLocaleDateString('en-US', {
-                              year: 'numeric',
-                              month: 'short',
-                              day: 'numeric'
-                            })}
-                          </span>
-                        </div>
-                      )}
-                    </div>
-
-                    {licence.credential_id && (
-                      <div className="text-xs text-slate-500">
-                        Credential ID: {licence.credential_id}
-                      </div>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
+          {licences.map((licence, index) => (
+            <AnimatedSection key={licence.id} delay={index * 100}>
+              <div className="p-1">
+                <LicenceCard licence={licence as any} />
+              </div>
             </AnimatedSection>
-            );
-          })}
+          ))}
         </div>
       </div>
     </section>

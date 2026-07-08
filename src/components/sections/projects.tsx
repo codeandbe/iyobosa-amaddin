@@ -3,7 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { getProjects } from "@/lib/projects";
 import { Github, ExternalLink } from "lucide-react";
-import Image from "next/image";
+import OptimizedImage from '@/components/ui/OptimizedImage';
+import { resolveImageUrl } from '@/lib/utils/image-url';
 import Link from "next/link";
 
 const ProjectsSection = async () => {
@@ -28,15 +29,13 @@ const ProjectsSection = async () => {
                 ) : (
                     <div className="mt-12 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
                         {projects.map((project) => {
-                            const imageUrl = project.image_id 
-                                ? `https://divlxdqckjoijfmeydvo.supabase.co/storage/v1/object/public/portfolio-assets/projects/${project.image_id}`
-                                : "https://picsum.photos/seed/placeholder/600/400";
+                            const imageUrl = resolveImageUrl(project.image_url ?? null, project.image_id ? `projects/${project.image_id}` : null);
                             
                             return (
                                 <Card key={project.id} className="flex flex-col overflow-hidden">
                                     <div className="relative h-48 w-full overflow-hidden bg-gray-100 dark:bg-gray-800">
-                                        <Image
-                                            src={imageUrl}
+                                        <OptimizedImage
+                                            src={imageUrl ?? undefined}
                                             alt={project.title}
                                             fill
                                             className="object-contain"

@@ -8,6 +8,8 @@ import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { Plus, Pencil, Trash2, ExternalLink, Calendar } from 'lucide-react';
 import Image from 'next/image';
+import OptimizedImage from '@/components/ui/OptimizedImage';
+import { resolveImageUrl } from '@/lib/utils/image-url';
 import Link from 'next/link';
 
 export default function LicencesAdminPage() {
@@ -112,19 +114,19 @@ export default function LicencesAdminPage() {
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {filteredLicences.map((licence) => {
             const imageUrl = licence.image_id 
-              ? `https://divlxdqckjoijfmeydvo.supabase.co/storage/v1/object/public/portfolio-assets/licences/${licence.image_id}`
+              ? resolveImageUrl((licence as any).image_url, `licences/${licence.image_id}`)
               : "https://picsum.photos/seed/licence/600/400";
             
             return (
               <Card key={licence.id} className="flex flex-col">
                 <div className="relative h-48 w-full overflow-hidden bg-gray-100 dark:bg-gray-800">
-                  <Image
-                    src={imageUrl}
+                    <OptimizedImage
+                      src={imageUrl ?? undefined}
                     alt={licence.title}
                     fill
                     className="object-contain"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  />
+                    />
                 </div>
                 <CardHeader>
                   <CardTitle className="font-headline text-lg">{licence.title}</CardTitle>

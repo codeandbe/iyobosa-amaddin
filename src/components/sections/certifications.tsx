@@ -1,7 +1,8 @@
 import { Card, CardFooter, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { getLicences } from "@/lib/licences";
 import { BadgeCheck, ExternalLink, Calendar } from "lucide-react";
-import Image from "next/image";
+import OptimizedImage from '@/components/ui/OptimizedImage';
+import { resolveImageUrl } from '@/lib/utils/image-url';
 import Link from "next/link";
 import { Button } from "../ui/button";
 
@@ -27,15 +28,13 @@ const CertificationsSection = async () => {
                 ) : (
                     <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
                         {licences.map((licence) => {
-                            const imageUrl = licence.image_id 
-                                ? `https://divlxdqckjoijfmeydvo.supabase.co/storage/v1/object/public/portfolio-assets/licences/${licence.image_id}`
-                                : "https://picsum.photos/seed/certification/600/400";
+                            const imageUrl = resolveImageUrl((licence as any).image_url, licence.image_id ? `licences/${licence.image_id}` : null);
                             
                             return (
                                 <Card key={licence.id} className="flex flex-col overflow-hidden">
                                     <div className="relative h-48 w-full overflow-hidden bg-gray-100 dark:bg-gray-800">
-                                        <Image
-                                            src={imageUrl}
+                                        <OptimizedImage
+                                            src={imageUrl ?? undefined}
                                             alt={`Badge for ${licence.title}`}
                                             fill
                                             className="object-contain"

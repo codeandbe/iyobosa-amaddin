@@ -16,13 +16,14 @@ export function getStoragePublicUrl(path: string): string {
   return `${base}/storage/v1/object/public/portfolio-assets/${path}`;
 }
 
+import { resolveImageUrl } from './utils/image-url';
+
 export function getProjectImageUrl(project: {
   image_url?: string | null;
   image_id?: string | null;
 }): string {
-  if (project.image_url) return project.image_url;
-  if (project.image_id) return getStoragePublicUrl(`projects/${project.image_id}`);
-  return 'https://picsum.photos/seed/project/600/400';
+  const url = resolveImageUrl(project.image_url ?? null, project.image_id ? `projects/${project.image_id}` : null);
+  return url ?? 'https://picsum.photos/seed/project/600/400';
 }
 
 export function parseTechStack(value: string): string[] {

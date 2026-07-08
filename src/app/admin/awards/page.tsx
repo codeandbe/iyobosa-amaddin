@@ -7,7 +7,8 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { Plus, Pencil, Trash2, ExternalLink, Calendar } from 'lucide-react';
-import Image from 'next/image';
+import OptimizedImage from '@/components/ui/OptimizedImage';
+import { resolveImageUrl } from '@/lib/utils/image-url';
 import Link from 'next/link';
 
 export default function AwardsAdminPage() {
@@ -111,15 +112,13 @@ export default function AwardsAdminPage() {
       ) : (
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {filteredAwards.map((award) => {
-            const imageUrl = award.image_id 
-              ? `https://divlxdqckjoijfmeydvo.supabase.co/storage/v1/object/public/portfolio-assets/awards/${award.image_id}`
-              : "https://picsum.photos/seed/award/600/400";
+            const imageUrl = resolveImageUrl((award as any).image_url, award.image_id ? `awards/${award.image_id}` : null);
             
             return (
               <Card key={award.id} className="flex flex-col">
                 <div className="relative h-48 w-full overflow-hidden bg-gray-100 dark:bg-gray-800">
-                  <Image
-                    src={imageUrl}
+                  <OptimizedImage
+                    src={imageUrl ?? undefined}
                     alt={award.title}
                     fill
                     className="object-contain"

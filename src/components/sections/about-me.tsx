@@ -1,4 +1,4 @@
-import Image from "next/image";
+import OptimizedImage from '@/components/ui/OptimizedImage';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -26,7 +26,7 @@ const AboutMeSection = async () => {
           <div className="md:col-span-1">
             <Card className="overflow-hidden rounded-lg border-primary/10">
               <div className="relative aspect-square w-full">
-                <Image
+                <OptimizedImage
                   src={imageUrl}
                   alt={BRAND.name}
                   fill

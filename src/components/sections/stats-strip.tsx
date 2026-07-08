@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { FolderOpen, Star, Zap, Award, BookOpen } from "lucide-react";
 import { getPublicStats } from "@/lib/stats";
+import Link from 'next/link';
 
 const StatsStrip = async () => {
   const stats = await getPublicStats();
@@ -19,14 +20,24 @@ const StatsStrip = async () => {
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
           {statCards.map((stat) => {
             const Icon = stat.icon;
+            // decide target
+            const href = stat.label === 'Projects Built' ? '/projects'
+              : stat.label === 'Featured Projects' ? '#featured-projects'
+              : stat.label === 'Skills' ? '/skills'
+              : stat.label === 'Certifications' ? '#licences'
+              : stat.label === 'Blog Posts' ? '/blog'
+              : '/';
+
             return (
-              <Card key={stat.label} className="bg-slate-800/30 border-slate-700/50 hover:border-cyan-500/30 transition-colors">
-                <CardContent className="flex flex-col items-center justify-center p-6 text-center space-y-2">
-                  <Icon className="h-6 w-6 text-cyan-400" />
-                  <p className="text-2xl sm:text-3xl font-bold text-white">{stat.value}</p>
-                  <p className="text-sm text-slate-400">{stat.label}</p>
-                </CardContent>
-              </Card>
+              <Link key={stat.label} href={href} scroll={true} className="block">
+                <Card className="bg-slate-800/30 border-slate-700/50 hover:border-cyan-500/30 transition-colors">
+                  <CardContent className="flex flex-col items-center justify-center p-6 text-center space-y-2">
+                    <Icon className="h-6 w-6 text-cyan-400" />
+                    <p className="text-2xl sm:text-3xl font-bold text-white">{stat.value}</p>
+                    <p className="text-sm text-slate-400">{stat.label}</p>
+                  </CardContent>
+                </Card>
+              </Link>
             );
           })}
         </div>
