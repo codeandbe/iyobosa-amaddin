@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import OptimizedImage from '@/components/ui/OptimizedImage';
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 
 type AwardProps = {
   id: string | number;
@@ -40,23 +41,25 @@ export const AwardCard: React.FC<{ award: AwardProps }> = ({ award }) => {
         </CardFooter>
       </Card>
 
-      {open && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
-          <div className="max-w-2xl w-full bg-slate-900 rounded-lg overflow-hidden">
-            <div className="relative h-56 w-full">
-              <OptimizedImage src={award.image_url ?? undefined} imageId={award.image_id ? `awards/${award.image_id}` : undefined} alt={award.title} fill className="object-cover" />
-            </div>
-            <div className="p-6">
-              <h3 className="font-headline text-2xl mb-2">{award.title}</h3>
-              {award.issuer && <div className="text-sm text-muted-foreground mb-2">{award.issuer}</div>}
-              <div className="text-sm text-muted-foreground whitespace-pre-line">{award.description}</div>
-              <div className="mt-4 flex justify-end">
-                <Button variant="outline" onClick={() => setOpen(false)}>Close</Button>
-              </div>
-            </div>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="max-w-2xl max-h-[85vh] p-0 gap-0 overflow-hidden flex flex-col">
+          <div className="relative h-48 sm:h-56 w-full shrink-0">
+            <OptimizedImage src={award.image_url ?? undefined} imageId={award.image_id ? `awards/${award.image_id}` : undefined} alt={award.title} fill className="object-cover" />
           </div>
-        </div>
-      )}
+          <div className="overflow-y-auto p-6">
+            <DialogHeader>
+              <DialogTitle className="font-headline text-2xl">{award.title}</DialogTitle>
+              {award.issuer && <DialogDescription>{award.issuer}</DialogDescription>}
+            </DialogHeader>
+            <div className="text-sm text-muted-foreground whitespace-pre-line mt-4">{award.description}</div>
+            {award.date_awarded && (
+              <div className="text-xs text-muted-foreground mt-4">
+                {new Date(award.date_awarded).toLocaleDateString()}
+              </div>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </>
   );
 };
